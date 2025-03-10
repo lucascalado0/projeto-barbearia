@@ -8,14 +8,14 @@ import { environment } from '../../../../environments/environments';
 @Injectable({
   providedIn: 'root'
 })
-export class ClientsService implements IClientSerivce{
+export class ClientsService implements IClientSerivce {
 
   constructor(private http: HttpClient) { }
 
   private readonly basePath = environment.apiUrl
 
   save(request: SaveClientRequest): Observable<SaveClientResponse> {
-  
+
     return this.http.post<SaveClientResponse>(`${this.basePath}clients`, request)
   }
   update(id: number, request: UpdateClientRequest): Observable<UpdateClientResponse> {
