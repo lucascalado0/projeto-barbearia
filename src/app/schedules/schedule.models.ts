@@ -1,27 +1,25 @@
-
-export interface ScheduleAppointmentMonthResponse {
-    year: number,
+ export interface ScheduleAppointmentMonthModel {
+    year: number
     month: number
-    scheduledAppoitment: ClientScheduleAppointmentResponse[]
-}
+    scheduleAppoitments: ClientScheduleAppointmentModel[]
+ }
 
-export interface ClientScheduleAppointmentResponse {
+ export interface ClientScheduleAppointmentModel {
     id: number
     day: number
     startAt: Date
     endAt: Date
     clientId: number
     clientName: string
-}
+ }
 
-export interface SaveScheduleResponse {
-    starAt: Date
-    endAt: Date
-    clientId: number
-}
+ export interface SaveScheduleModel {
+    startAt?: Date
+    endAt?: Date
+    clientId?: number
+ }
 
-export interface SaveScheduleRequest {
-    startAt: Date
-    endAt: Date
-    clientId: number
-}
+ export interface SelectClientModel {
+    id: number
+    name: string
+ }
