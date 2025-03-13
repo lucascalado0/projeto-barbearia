@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { IScheduleService } from './ischedules.service';
 import { Observable } from 'rxjs';
-import { SaveScheduleRequest, SaveScheduleResponse, ScheduleAppointmentMonthResponse } from '../../../schedules/schedule.models';
+import { SaveScheduleRequest, SaveScheduleResponse, ScheduleAppointmentMonthResponse } from './schedule.models';
+
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environments';
 
