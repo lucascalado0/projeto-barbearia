@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Inject, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Inject, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { SERVICES_TOKEN } from '../../services/service-token';
 import { DialogManagerService } from '../../services/dialog-manager.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -18,21 +18,35 @@ import { MatTimepickerModule } from '@angular/material/timepicker';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { YesNoDialogComponent } from '../../commons/components/yes-no-dialog/yes-no-dialog.component';
 import { Subscription } from 'rxjs';
-
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-schedules-calendar',
   imports: [
-    CommonModule, MatDatepickerModule, FormsModule, MatCardModule, MatButtonModule, MatIconModule,
-    MatPaginatorModule, MatInputModule, MatFormFieldModule, MatSelectModule, MatTooltipModule, MatTableModule, MatTimepickerModule
+    CommonModule,
+    MatDatepickerModule,
+    FormsModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatPaginatorModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatTooltipModule,
+    MatTableModule,
+    MatTimepickerModule
   ],
   templateUrl: './schedules-calendar.component.html',
   styleUrl: './schedules-calendar.component.scss',
   providers: [
-    { provide: SERVICES_TOKEN.DIALOG, useClass: DialogManagerService }
+    provideNativeDateAdapter(),
+    { 
+      provide: SERVICES_TOKEN.DIALOG, useClass: DialogManagerService 
+    }
   ]
 })
-export class SchedulesCalendarComponent implements AfterViewInit, OnChanges, OnInit {
+export class SchedulesCalendarComponent implements AfterViewInit, OnChanges, OnDestroy {
 
   private subscription?: Subscription
 
@@ -52,13 +66,12 @@ export class SchedulesCalendarComponent implements AfterViewInit, OnChanges, OnI
   @Input() clients: SelectClientModel[] = []
 
   @Output() onDateChange = new EventEmitter<Date>()
-  @Output() onScheduleClient = new EventEmitter<SaveScheduleModel>()
   @Output() onConfirmDelete = new EventEmitter<ClientScheduleAppointmentModel>()
+  @Output() onScheduleClient = new EventEmitter<SaveScheduleModel>()
+  
+  @ViewChild(MatPaginator) paginator!: MatPaginator
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-
-  constructor(
-    @Inject(SERVICES_TOKEN.DIALOG) private readonly dialogManagerService: IDilogManagerService) { }
+  constructor(@Inject(SERVICES_TOKEN.DIALOG) private readonly dialogManagerService: IDilogManagerService) { }
 
   get selected(): Date {
     return this._selected
@@ -72,35 +85,29 @@ export class SchedulesCalendarComponent implements AfterViewInit, OnChanges, OnI
     }
   }
 
-  ngOnInit(): void {
-    if (this.subscription) {
+  ngOnDestroy(): void {
+    if(this.subscription){
       this.subscription.unsubscribe()
     }
   }
 
-
-
   ngAfterViewInit(): void {
     if (this.dataSource && this.paginator) {
-
       this.dataSource.paginator = this.paginator
     }
   }
-
-
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['monthSchedule'] && this.monthSchedule) {
       this.buildTable()
     }
   }
 
-  onSubmit(form: NgForm){
+  onSubmit(form: NgForm) {
     const startAt = new Date(this._selected)
     const endAt = new Date(this._selected)
-
     startAt.setHours(this.newSchedule.startAt!.getHours(), this.newSchedule.startAt!.getMinutes())
     endAt.setHours(this.newSchedule.endAt!.getHours(), this.newSchedule.endAt!.getMinutes())
-    const saved:  ClientScheduleAppointmentModel = {
+    const saved: ClientScheduleAppointmentModel = {
       id: -1,
       day: this._selected.getDate(),
       startAt,
@@ -108,10 +115,11 @@ export class SchedulesCalendarComponent implements AfterViewInit, OnChanges, OnI
       clientId: this.newSchedule.clientId!,
       clientName: this.clients.find(c => c.id === this.newSchedule.clientId!)!.name
     }
+    this.monthSchedule.scheduledAppointments.push(saved)
     this.onScheduleClient.emit(saved)
     this.buildTable()
     form.resetForm()
-    this.newSchedule = { startAt: undefined, endAt: undefined, clientId: undefined}
+    this.newSchedule = { startAt: undefined, endAt: undefined, clientId: undefined }
   }
 
   requestDelete(schedule: ClientScheduleAppointmentModel) {
@@ -126,7 +134,6 @@ export class SchedulesCalendarComponent implements AfterViewInit, OnChanges, OnI
         if (this.paginator) {
           this.dataSource.paginator = this.paginator
         }
-
       }
     })
   }
@@ -138,9 +145,9 @@ export class SchedulesCalendarComponent implements AfterViewInit, OnChanges, OnI
   }
 
   private buildTable() {
-    const appointments = this.monthSchedule.scheduleAppoitments.filter(a =>
+    const appointments = this.monthSchedule.scheduledAppointments.filter(a =>
       this.monthSchedule.year === this._selected.getFullYear() &&
-      this.monthSchedule.month === this._selected.getMonth() &&
+      this.monthSchedule.month - 1 === this._selected.getMonth() &&
       a.day === this._selected.getDate()
     )
     this.dataSource = new MatTableDataSource<ClientScheduleAppointmentModel>(appointments);

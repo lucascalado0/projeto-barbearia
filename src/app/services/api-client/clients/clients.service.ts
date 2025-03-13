@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IClientSerivce } from './iclients.service';
+import { IClientService } from './iclients.service';
 import { Observable } from 'rxjs';
 import { SaveClientRequest, SaveClientResponse, UpdateClientRequest, UpdateClientResponse, ListClientResponse, DetailClientResponse } from './client.models';
 import { HttpClient } from '@angular/common/http';
@@ -8,7 +8,7 @@ import { environment } from '../../../../environments/environments';
 @Injectable({
   providedIn: 'root'
 })
-export class ClientsService implements IClientSerivce {
+export class ClientsService implements IClientService {
 
   constructor(private http: HttpClient) { }
 

@@ -1,6 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { SERVICES_TOKEN } from '../../services/service-token';
-import { IClientSerivce } from '../../services/api-client/clients/iclients.service';
+import { IClientService } from '../../services/api-client/clients/iclients.service';
 import { ClientsService } from '../../services/api-client/clients/clients.service';
 import { ClientTableComponent } from '../components/client-table/client-table.component';
 import { SnackbarManagerService } from '../../services/snackbar-manager.service';
@@ -26,7 +26,7 @@ export class ListClientsComponent implements OnInit, OnDestroy{
   clients: ClientModelTable[] = []
 
   constructor(
-    @Inject(SERVICES_TOKEN.HTTP.CLIENT) private readonly httpService: IClientSerivce,
+    @Inject(SERVICES_TOKEN.HTTP.CLIENT) private readonly httpService: IClientService,
     @Inject(SERVICES_TOKEN.SNACKBAR) private readonly snackBarManager: ISnackbarManagerService,
     private readonly router: Router
 ){}

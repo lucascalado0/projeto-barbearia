@@ -1,7 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ClientsService } from '../../services/api-client/clients/clients.service';
 import { SERVICES_TOKEN } from '../../services/service-token';
-import { IClientSerivce } from '../../services/api-client/clients/iclients.service';
+import { IClientService } from '../../services/api-client/clients/iclients.service';
 import { SnackbarManagerService } from '../../services/snackbar-manager.service';
 import { ISnackbarManagerService } from '../../services/isnack-manager.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -27,7 +27,7 @@ export class EditClientsComponent implements OnInit, OnDestroy {
   client: ClientModelForm = { id: 0, name: '', email: '', phone: '' }
 
   constructor(
-    @Inject(SERVICES_TOKEN.HTTP.CLIENT) private readonly httpService: IClientSerivce,
+    @Inject(SERVICES_TOKEN.HTTP.CLIENT) private readonly httpService: IClientService,
     @Inject(SERVICES_TOKEN.SNACKBAR) private readonly snackBarManager: ISnackbarManagerService,
     private readonly activeRoute: ActivatedRoute,
     private readonly router: Router
