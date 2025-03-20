@@ -69,6 +69,6 @@ export class SchedulesMonthComponent implements OnInit, OnDestroy{
   private fetchSchedules(currentDate: Date){
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth() + 1;
-    this.subscriptions.push(this.httpService.listInMonth(year, month).subscribe())
+    this.subscriptions.push(this.httpService.listInMonth(year, month).subscribe(data => this.monthSchedule = data))
   }
 }
